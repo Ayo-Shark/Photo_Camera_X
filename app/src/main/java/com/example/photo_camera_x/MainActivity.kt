@@ -41,8 +41,6 @@ class MainActivity : AppCompatActivity() {
     private lateinit var galleryButton: ImageButton
     private lateinit var takePhotoButton: ImageButton
 
-
-
     private val CAMERA_PERMISSIONS = arrayOf(
         android.Manifest.permission.CAMERA,
         android.Manifest.permission.RECORD_AUDIO
@@ -52,24 +50,9 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContentView(R.layout.activity_main)
-
         initViews()
-
         setupRecyclerView()
-
-
         checkPermissions()
-
-
-       /* previewView = findViewById(R.id.previewView)
-        recyclerPhotos = findViewById(R.id.recyclerPhotos)
-        bottomSheet = findViewById(R.id.bottomSheet)
-
-        bottomSheetBehavior = BottomSheetBehavior.from(bottomSheet)
-        bottomSheetBehavior.peekHeight = 0
-*/
-
-
         }
 
     private fun initViews() {
@@ -79,19 +62,22 @@ class MainActivity : AppCompatActivity() {
         switchCameraButton = findViewById(R.id.SwitchCamera)
         galleryButton = findViewById(R.id.Gallery)
         takePhotoButton = findViewById(R.id.btnTakePhoto)
-
-
         bottomSheetBehavior = BottomSheetBehavior.from(bottomSheet).apply {
             peekHeight = 0
             state = BottomSheetBehavior.STATE_HIDDEN
+            isHideable = true
+
+            addBottomSheetCallback(object : BottomSheetBehavior.BottomSheetCallback() {
+                override fun onStateChanged(bottomSheet: View, newState: Int) {
+                    if (newState == BottomSheetBehavior.STATE_HIDDEN) {
+                        bottomSheet.visibility = View.GONE
+                    }
+                }
+
+                override fun onSlide(bottomSheet: View, slideOffset: Float) {
+                }
+            })
         }
-
-      /*  if (hasRequiredPermissions()) {
-            startCamera()
-        } else {
-            ActivityCompat.requestPermissions(this, CAMERA_PERMISSIONS, 0)
-        }*/
-
 
         }
 
@@ -107,19 +93,6 @@ class MainActivity : AppCompatActivity() {
         }
 
 
-
-
-
-       /* val adapter = PhotoAdapter()
-        recyclerPhotos.adapter = adapter
-
-        lifecycleScope.launch {
-            lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewModel.bitmaps.collect { adapter.submitList(it) }
-
-            }
-        }*/
-
         }
 
     private fun checkPermissions() {
@@ -130,8 +103,6 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-
-
     override fun onRequestPermissionsResult(
         requestCode: Int,
         permissions: Array<out String>,
@@ -141,7 +112,6 @@ class MainActivity : AppCompatActivity() {
         if (requestCode == 0 && hasRequiredPermissions()) {
             startCamera()
         } else {
-            Toast.makeText(this, "Permissions required", Toast.LENGTH_SHORT).show()
             finish()
         }
     }
@@ -150,28 +120,14 @@ class MainActivity : AppCompatActivity() {
         try {
             controller = LifecycleCameraController(this).apply {
                 setEnabledUseCases(CameraController.IMAGE_CAPTURE or CameraController.VIDEO_CAPTURE)
+
             }
             previewView.controller = controller
             controller.bindToLifecycle(this)
             setupButtonListeners()
         } catch (e: Exception) {
-            Log.e("CameraX", "Ошибка при инициализации камеры", e)
+            Log.e("CameraX", "Error init", e)
         }
-
-       /* findViewById<ImageButton>(R.id.SwitchCamera).setOnClickListener {
-            controller.cameraSelector =
-                if (controller.cameraSelector == CameraSelector.DEFAULT_BACK_CAMERA) {
-                    CameraSelector.DEFAULT_FRONT_CAMERA
-                } else CameraSelector.DEFAULT_BACK_CAMERA
-        }
-
-        findViewById<ImageButton>(R.id.Gallery).setOnClickListener {
-            bottomSheetBehavior.state = BottomSheetBehavior.STATE_EXPANDED
-        }
-
-        findViewById<ImageButton>(R.id.btnTakePhoto).setOnClickListener {
-            takePhoto(controller, viewModel::onTakePhoto)
-        }*/
 
     }
 
@@ -185,9 +141,12 @@ class MainActivity : AppCompatActivity() {
         }
 
         findViewById<ImageButton>(R.id.Gallery).setOnClickListener {
-            bottomSheetBehavior.state = when (bottomSheetBehavior.state) {
-                BottomSheetBehavior.STATE_EXPANDED -> BottomSheetBehavior.STATE_HIDDEN
-                else -> BottomSheetBehavior.STATE_EXPANDED
+            if (bottomSheet.visibility == View.VISIBLE) {
+                bottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
+            } else {
+                /*updateGallery()*/
+                bottomSheet.visibility = View.VISIBLE
+                bottomSheetBehavior.state = BottomSheetBehavior.STATE_EXPANDED
             }
         }
 
@@ -219,6 +178,9 @@ class MainActivity : AppCompatActivity() {
                         true
                     )
                     onPhotoTaken(rotatedBitmap)
+                    /*if (bottomSheetBehavior.state == BottomSheetBehavior.STATE_EXPANDED) {
+                        updateGallery()
+                    }*/
                 }
 
 
@@ -236,6 +198,13 @@ class MainActivity : AppCompatActivity() {
             ContextCompat.checkSelfPermission(this, it) == PackageManager.PERMISSION_GRANTED
         }
     }
+
+    /*private fun updateGallery(){
+        val currentPhotos = viewModel.bitmaps.value
+        (recyclerPhotos.adapter as PhotoAdapter).submitList(currentPhotos)
+    }*/
+
+
 
 
 }

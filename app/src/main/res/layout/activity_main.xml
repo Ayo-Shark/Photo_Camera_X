@@ -26,6 +26,7 @@
         android:id="@+id/bottomSheet"
         android:layout_width="match_parent"
         android:layout_height="300dp"
+        android:visibility="gone"
         android:layout_marginBottom="72dp"
         android:background="@android:color/white"
         app:behavior_peekHeight="0dp"
@@ -49,17 +50,17 @@
 
     <ImageButton
         android:id="@+id/SwitchCamera"
-        android:layout_width="56dp"
-        android:layout_height="56dp"
+        android:layout_width="72dp"
+        android:layout_height="72dp"
         android:background="@drawable/button_background"
         android:src="@drawable/ic_switch_camera"
         android:scaleType="centerInside"
         app:tint="@android:color/white"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"/>
+        app:layout_constraintTop_toTopOf="parent"/>
 
-    <LinearLayout
+   <!-- <LinearLayout
         android:id="@+id/bottomControls"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
@@ -67,7 +68,7 @@
         android:orientation="horizontal"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent">
+        app:layout_constraintEnd_toEndOf="parent">-->
 
         <ImageButton
             android:id="@+id/Gallery"
@@ -76,7 +77,9 @@
             android:background="@drawable/button_background"
             android:src="@drawable/ic_gallery"
             app:tint="@android:color/white"
-            android:layout_marginEnd="32dp"/>
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"/>
 
         <ImageButton
             android:id="@+id/btnTakePhoto"
@@ -84,7 +87,11 @@
             android:layout_height="72dp"
             android:background="@drawable/button_background"
             android:src="@drawable/ic_camera"
-            app:tint="@android:color/white"/>
-    </LinearLayout>
+            app:tint="@android:color/white"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"/>
+    <!--</LinearLayout>-->
 </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
